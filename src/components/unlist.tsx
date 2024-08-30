@@ -189,6 +189,7 @@ export default function Unlist() {
         ],
       };
 
+      console.log("data", data);
       writeContract(data);
 
       setOpen(false);

@@ -1,6 +1,6 @@
 import { bscTestnet, baseSepolia, type Chain } from "viem/chains";
 
-import MarketplaceABI from "@/lib/abi/Marketplace.json";
+import MarketplaceABI from "@/lib/abi/Marketplace_ABI.json";
 
 import BNBLogo from '@/assets/bnb-logo.svg'
 import BaseLogo from '@/assets/base-logo.svg'
