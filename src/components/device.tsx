@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @next/next/no-img-element */
 import { useCallback, useState, useEffect } from "react";
@@ -5,6 +6,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Decimal } from "decimal.js";
+import { format } from "fecha";
 import {
   useWriteContract,
   useAccount,
@@ -288,13 +290,15 @@ export default function Device({
               <div className="mt-5">
                 <div>
                   rent duration:
-                  {new Date(
-                    Number(device.rental_info.start_time) * 1000,
-                  ).toLocaleDateString()}
-                  -
-                  {new Date(
-                    Number(device.rental_info.end_time) * 1000,
-                  ).toLocaleDateString()}
+                  {format(
+                    new Date(Number(device.rental_info.start_time) * 1000),
+                    "YYYY-MM-DD HH:mm:ss",
+                  )}{" "}
+                  -{" "}
+                  {format(
+                    new Date(Number(device.rental_info.end_time) * 1000),
+                    "YYYY-MM-DD HH:mm:ss",
+                  )}
                 </div>
               </div>
               <div>
@@ -303,6 +307,7 @@ export default function Device({
                   .div(10 ** 18)
                   .toString()}
               </div>
+              <div>access uri: {device.rental_info.access_uri}</div>
             </>
           ) : null}
         </div>
