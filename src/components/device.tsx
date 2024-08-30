@@ -57,7 +57,6 @@ const formSchema = z.object({
   device: z.string(),
   rentalDays: z.string(),
   more: z.boolean(),
-  accessUrl: z.string(),
 });
 
 export enum Type {
@@ -134,7 +133,6 @@ export default function Device({
       device: "",
       rentalDays: "1",
       more: false,
-      accessUrl: "",
     },
   });
 
@@ -154,7 +152,6 @@ export default function Device({
           address,
           BigInt(values.rentalDays),
           BigInt(price),
-          values.accessUrl,
         ],
         // gas: parseGwei("20"),
       };
@@ -359,19 +356,6 @@ export default function Device({
                             {device?.listing_info?.min_rental_days} -
                             {device?.listing_info?.max_rental_days} days
                           </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="accessUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Access Url</FormLabel>
-                          <FormControl>
-                            <Input placeholder="access url" {...field} />
-                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

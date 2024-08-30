@@ -25,6 +25,6 @@ export const chains = [
 
 
 export const Marketplace_Contract = {
-  address: "0xEdeE6f1E0315d0872CF824A71BC9d5E3Ef5f0b10",
+  address: "0xe250f5d46395E42c9955E16CAc6C9dacCdD3B7dB",
   abi: MarketplaceABI.abi
 }
