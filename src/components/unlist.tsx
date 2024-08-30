@@ -188,7 +188,6 @@ export default function Unlist() {
           values.accessURI,
         ],
       };
-      console.log("data", data);
 
       writeContract(data);
 

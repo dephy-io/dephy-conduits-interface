@@ -307,7 +307,9 @@ export default function Device({
                   .div(10 ** 18)
                   .toString()}
               </div>
-              <div>access uri: {device.rental_info.access_uri}</div>
+              <div className="break-words">
+                access uri: {device.rental_info.access_uri}
+              </div>
             </>
           ) : null}
         </div>
