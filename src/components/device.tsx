@@ -12,8 +12,6 @@ import {
 } from "wagmi";
 import { useToast } from "@/components/ui/use-toast";
 
-import { ToastAction } from "@/components/ui/toast";
-
 import {
   Dialog,
   DialogContent,
@@ -59,6 +57,7 @@ const formSchema = z.object({
   device: z.string(),
   rentalDays: z.string(),
   more: z.boolean(),
+  accessUrl: z.string(),
 });
 
 export enum Type {
@@ -135,6 +134,7 @@ export default function Device({
       device: "",
       rentalDays: "1",
       more: false,
+      accessUrl: "",
     },
   });
 
@@ -154,6 +154,7 @@ export default function Device({
           address,
           BigInt(values.rentalDays),
           BigInt(price),
+          values.accessUrl,
         ],
         // gas: parseGwei("20"),
       };
@@ -285,7 +286,7 @@ export default function Device({
               </div>
             </div>
           ) : null}
-          {device?.rental_info?.tx_hash ? (
+          {device?.rental_info?.rental_status ? (
             <>
               <div className="mt-5">
                 <div>
@@ -358,6 +359,19 @@ export default function Device({
                             {device?.listing_info?.min_rental_days} -
                             {device?.listing_info?.max_rental_days} days
                           </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="accessUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Access Url</FormLabel>
+                          <FormControl>
+                            <Input placeholder="access url" {...field} />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -465,7 +479,7 @@ export default function Device({
 
           {isConnected && type === Type.LIST ? (
             <div className="flex flex-col gap-4 px-4">
-              {!device.rental_info?.tx_hash ||
+              {!device.rental_info?.rental_status ||
               Number(device.rental_info?.end_time) * 1000 < Date.now() ? (
                 <AlertDialog>
                   <AlertDialogTrigger className="lt-sm:text-xs lt-sm:p-3 flex cursor-pointer items-center justify-center gap-2.5 whitespace-nowrap bg-orange-400 px-5 py-3.5 text-base font-normal text-black hover:bg-orange-400 hover:opacity-80">
@@ -492,7 +506,7 @@ export default function Device({
                 </AlertDialog>
               ) : null}
 
-              {!device.rental_info?.tx_hash ||
+              {!device.rental_info?.rental_status ||
               Number(device.rental_info?.end_time) * 1000 < Date.now() ? (
                 <AlertDialog>
                   <AlertDialogTrigger className="lt-sm:text-xs lt-sm:p-3 flex cursor-pointer items-center justify-center gap-2.5 whitespace-nowrap bg-orange-400 px-5 py-3.5 text-base font-normal text-black hover:bg-orange-400 hover:opacity-80">
@@ -519,7 +533,7 @@ export default function Device({
                 </AlertDialog>
               ) : null}
 
-              {!device.rental_info?.tx_hash ||
+              {!device.rental_info?.rental_status ||
               Number(device.rental_info?.end_time) * 1000 < Date.now() ? (
                 <Dialog open={relistOpen} onOpenChange={setRelistOpen}>
                   <DialogTrigger>
@@ -598,7 +612,7 @@ export default function Device({
                 </Dialog>
               ) : null}
 
-              {device.rental_info?.tx_hash &&
+              {device.rental_info?.rental_status &&
               Number(device.rental_info?.end_time) * 1000 < Date.now() ? (
                 <AlertDialog>
                   <AlertDialogTrigger className="lt-sm:text-xs lt-sm:p-3 mr-5 flex w-full cursor-pointer items-center justify-center gap-2.5 whitespace-nowrap bg-orange-400 px-5 py-3.5 text-base font-normal text-black hover:bg-orange-400 hover:opacity-80">

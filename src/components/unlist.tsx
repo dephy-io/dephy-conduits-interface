@@ -12,10 +12,8 @@ import {
   useAccount,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { erc721Abi } from "viem";
 import { useToast } from "@/components/ui/use-toast";
 
-import { ToastAction } from "@/components/ui/toast";
 import {
   Dialog,
   DialogContent,
@@ -74,7 +72,7 @@ const formSchema = z.object({
 export default function Unlist() {
   const { address, isConnected } = useAccount();
   const { data: hash, writeContract } = useWriteContract();
-  const { chain, gqlClient, getMetadata, viemClient } = useClient();
+  const { chain, gqlClient, getMetadata } = useClient();
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({ hash });
   const { toast } = useToast();
@@ -155,42 +153,40 @@ export default function Unlist() {
   }, [data, getDevicesWithNameAndSymbol, devicesData]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (address && viemClient) {
-      const approvedTo = await viemClient.readContract({
-        abi: erc721Abi,
-        address: values.product as `0x${string}`,
-        functionName: "getApproved",
-        args: [BigInt(values.tokenId)],
-      });
+    if (address) {
+      // const approvedTo = await viemClient.readContract({
+      //   abi: erc721Abi,
+      //   address: values.product as `0x${string}`,
+      //   functionName: "getApproved",
+      //   args: [BigInt(values.tokenId)],
+      // });
 
-      if (approvedTo !== Marketplace_Contract.address) {
-        const approvalData = {
-          abi: erc721Abi,
-          address: values.product as `0x${string}`,
-          functionName: "approve" as unknown as never,
-          args: [Marketplace_Contract.address, BigInt(values.tokenId)],
-        };
+      // if (approvedTo !== Marketplace_Contract.address) {
+      //   const approvalData = {
+      //     abi: erc721Abi,
+      //     address: values.product as `0x${string}`,
+      //     functionName: "approve" as unknown as never,
+      //     args: [Marketplace_Contract.address, BigInt(values.tokenId)],
+      //   };
 
-        writeContract(approvalData);
-      } else {
-        const price = new Decimal(values.dailyRent).mul(10 ** 18).toNumber();
-        const data = {
-          abi: Marketplace_Contract.abi,
-          address: Marketplace_Contract.address as `0x${string}`,
-          functionName: "list",
-          args: [
-            values.device,
-            BigInt(values.minRentalDays),
-            BigInt(values.maxRentalDays),
-            "0x0000000000000000000000000000000000000000",
-            BigInt(price),
-            address,
-          ],
-        };
+      //   writeContract(approvalData);
+      // } else {
+      const price = new Decimal(values.dailyRent).mul(10 ** 18).toNumber();
+      const data = {
+        abi: Marketplace_Contract.abi,
+        address: Marketplace_Contract.address as `0x${string}`,
+        functionName: "list",
+        args: [
+          values.device,
+          BigInt(values.minRentalDays),
+          BigInt(values.maxRentalDays),
+          "0x0000000000000000000000000000000000000000",
+          BigInt(price),
+          address,
+        ],
+      };
 
-        console.log("data", data);
-        writeContract(data);
-      }
+      writeContract(data);
 
       setOpen(false);
     }
@@ -295,10 +291,26 @@ export default function Unlist() {
                                 </FormItem>
                               )}
                             />
-                            <div>
+                            <FormField
+                              control={form.control}
+                              name="dailyRent"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Daily Rent</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="daily rent"
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            {/* <div>
                               <div>Daily Rent</div>
                               <div>0.0001ETH</div>
-                            </div>
+                            </div> */}
                             <Button
                               className="lt-sm:text-xs lt-sm:p-3 flex cursor-pointer items-center justify-center gap-2.5 whitespace-nowrap bg-orange-400 px-5 py-3.5 text-base font-normal text-black hover:bg-orange-400 hover:opacity-80"
                               type="submit"
