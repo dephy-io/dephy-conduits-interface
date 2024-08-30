@@ -28,6 +28,7 @@ export interface DeviceProp {
     block_number: number;
     device: string;
     access_id: string;
+    access_uri: string;
     tenant: string;
     start_time: string;
     end_time: string;

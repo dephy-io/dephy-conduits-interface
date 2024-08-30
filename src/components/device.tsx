@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @next/next/no-img-element */
 import { useCallback, useState, useEffect } from "react";
@@ -5,14 +6,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Decimal } from "decimal.js";
+import { format } from "fecha";
 import {
   useWriteContract,
   useAccount,
   useWaitForTransactionReceipt,
 } from "wagmi";
 import { useToast } from "@/components/ui/use-toast";
-
-import { ToastAction } from "@/components/ui/toast";
 
 import {
   Dialog,
@@ -285,18 +285,20 @@ export default function Device({
               </div>
             </div>
           ) : null}
-          {device?.rental_info?.tx_hash ? (
+          {device?.rental_info?.rental_status ? (
             <>
               <div className="mt-5">
                 <div>
                   rent duration:
-                  {new Date(
-                    Number(device.rental_info.start_time) * 1000,
-                  ).toLocaleDateString()}
-                  -
-                  {new Date(
-                    Number(device.rental_info.end_time) * 1000,
-                  ).toLocaleDateString()}
+                  {format(
+                    new Date(Number(device.rental_info.start_time) * 1000),
+                    "YYYY-MM-DD HH:mm:ss",
+                  )}{" "}
+                  -{" "}
+                  {format(
+                    new Date(Number(device.rental_info.end_time) * 1000),
+                    "YYYY-MM-DD HH:mm:ss",
+                  )}
                 </div>
               </div>
               <div>
@@ -304,6 +306,9 @@ export default function Device({
                 {new Decimal(device.rental_info.total_paid_rent)
                   .div(10 ** 18)
                   .toString()}
+              </div>
+              <div className="break-words">
+                access uri: {device.rental_info.access_uri}
               </div>
             </>
           ) : null}
@@ -465,7 +470,7 @@ export default function Device({
 
           {isConnected && type === Type.LIST ? (
             <div className="flex flex-col gap-4 px-4">
-              {!device.rental_info?.tx_hash ||
+              {!device.rental_info?.rental_status ||
               Number(device.rental_info?.end_time) * 1000 < Date.now() ? (
                 <AlertDialog>
                   <AlertDialogTrigger className="lt-sm:text-xs lt-sm:p-3 flex cursor-pointer items-center justify-center gap-2.5 whitespace-nowrap bg-orange-400 px-5 py-3.5 text-base font-normal text-black hover:bg-orange-400 hover:opacity-80">
@@ -492,7 +497,7 @@ export default function Device({
                 </AlertDialog>
               ) : null}
 
-              {!device.rental_info?.tx_hash ||
+              {!device.rental_info?.rental_status ||
               Number(device.rental_info?.end_time) * 1000 < Date.now() ? (
                 <AlertDialog>
                   <AlertDialogTrigger className="lt-sm:text-xs lt-sm:p-3 flex cursor-pointer items-center justify-center gap-2.5 whitespace-nowrap bg-orange-400 px-5 py-3.5 text-base font-normal text-black hover:bg-orange-400 hover:opacity-80">
@@ -519,7 +524,7 @@ export default function Device({
                 </AlertDialog>
               ) : null}
 
-              {!device.rental_info?.tx_hash ||
+              {!device.rental_info?.rental_status ||
               Number(device.rental_info?.end_time) * 1000 < Date.now() ? (
                 <Dialog open={relistOpen} onOpenChange={setRelistOpen}>
                   <DialogTrigger>
@@ -598,7 +603,7 @@ export default function Device({
                 </Dialog>
               ) : null}
 
-              {device.rental_info?.tx_hash &&
+              {device.rental_info?.rental_status &&
               Number(device.rental_info?.end_time) * 1000 < Date.now() ? (
                 <AlertDialog>
                   <AlertDialogTrigger className="lt-sm:text-xs lt-sm:p-3 mr-5 flex w-full cursor-pointer items-center justify-center gap-2.5 whitespace-nowrap bg-orange-400 px-5 py-3.5 text-base font-normal text-black hover:bg-orange-400 hover:opacity-80">
