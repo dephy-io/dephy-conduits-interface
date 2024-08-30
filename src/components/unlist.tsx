@@ -67,7 +67,7 @@ const formSchema = z.object({
   maxRentalDays: z.string(),
   rentCurrency: z.string(),
   dailyRent: z.string(),
-  accessUrl: z.string(),
+  accessURI: z.string(),
 });
 
 export default function Unlist() {
@@ -120,7 +120,7 @@ export default function Unlist() {
       maxRentalDays: "30",
       rentCurrency: "ETH",
       dailyRent: "0.0001",
-      accessUrl: "",
+      accessURI: "",
     },
   });
 
@@ -185,7 +185,7 @@ export default function Unlist() {
           "0x0000000000000000000000000000000000000000",
           BigInt(price),
           address,
-          values.accessUrl,
+          values.accessURI,
         ],
       };
 
@@ -312,13 +312,13 @@ export default function Unlist() {
                             />
                             <FormField
                               control={form.control}
-                              name="accessUrl"
+                              name="accessURI"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Access Url</FormLabel>
+                                  <FormLabel>Access URI</FormLabel>
                                   <FormControl>
                                     <Input
-                                      placeholder="access url"
+                                      placeholder="access uri"
                                       {...field}
                                     />
                                   </FormControl>
